@@ -32,11 +32,6 @@ module.exports = function(app, passport){
 		.get(function(req,res){
 			res.render('login')
 		})
-		.post(passport.authenticate('local', { failureRedirect: '/login'}),
-			function(req, res){
-				console.log("POST login redirect")
-				console.log('req.user', req.user)
-				res.redirect('/')
-			}
-		)
+		.post(passport.authenticate('local', { successRedirect: '/',
+												failureRedirect: '/login'}))
 }
