@@ -1,5 +1,6 @@
-var mongojs = require('mongojs')
-var db = mongojs('question-board', ['questions', 'users'])
+'use strict'
+
+var User = require('mongoose').model('User')
 
 module.exports = function(q){ // Calling the app 'q' for questionBoard
 	q.route('/')
@@ -14,7 +15,17 @@ module.exports = function(q){ // Calling the app 'q' for questionBoard
 		})
 		.post(function(req, res, next){
 			console.log('post route')	
+			var newUser = {
+				username: req.body.username,
+				password: req.body.password,
+				questions: [],
+				answers: []
+			}			
 			
-			db.users.insert(req.body)
+			User.create(newUser, function(err){
+				if(err) {console.log(err)}
+			})
+			
+			res.redirect('/')
 		})
 }
