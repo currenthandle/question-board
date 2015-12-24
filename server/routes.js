@@ -2,15 +2,15 @@
 
 var User = require('mongoose').model('User')
 
-module.exports = function(q){ // Calling the app 'q' for questionBoard
-	q.route('/')
+module.exports = function(app, passport){ 
+	app.route('/')
 		.get(function(req, res){
 			res.render('index')
 		})
-	q.get('/signUp', function(req, res){
+	app.get('/signUp', function(req, res){
 		res.render('signup')
 	})
-	q.route('/user')
+	app.route('/user')
 		.get(function(req, res){
 		})
 		.post(function(req, res, next){
@@ -28,4 +28,15 @@ module.exports = function(q){ // Calling the app 'q' for questionBoard
 			
 			res.redirect('/')
 		})
+	app.route('/login')
+		.get(function(req,res){
+			res.render('login')
+		})
+		.post(passport.authenticate('local', { failureRedirect: '/login'}),
+			function(req, res){
+				console.log("POST login redirect")
+				console.log('req.user', req.user)
+				res.redirect('/')
+			}
+		)
 }

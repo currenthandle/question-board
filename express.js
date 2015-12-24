@@ -28,49 +28,17 @@ module.exports = function(){
 	app.use(passport.initialize())						// Intialize passport
 	app.use(passport.session())							// Initialize session for passport
 
-
-	console.log("before passport.use(new LocalStrategy")
-	var User = require('mongoose').model('User')
-	// Username and password extracted from cookie
-	passport.use(new LocalStrategy(function(username, password, done){
-		console.log("new LocalStrategy")
-		User.findOne({username: username, password: password}, function(err, user){
-			if(err) { return done(err) }
-			if(!user) { return done(null, false)}
-			return done(null, user)
-		})	
-	}))
-	passport.serializeUser(function(user, done){
-		console.log('seralizeUser')
-		done(null, user)
-	})
-
-	passport.deserializeUser(function(user, done){
-		console.log('deseralizeUser')
-		User.findById(user._id, function(err, user){
-			done(err, user)
-		})
-	})
-	app.post('/login', 
-		passport.authenticate('local', { failureRedirect: '/login'}),
-		function(req, res){
-			console.log("POST login redirect")
-			console.log('req.user', req.user)
-			res.redirect('/')
-		}
-	)
-	app.get('/login', function(req,res){
-		res.render('login')
-	})
-
 	// Set Static Server
 	app.use(express.static(__dirname + '/public'))
 
 	app.set('views', './public/views')    // Set views directory
 	app.set('view engine', 'ejs')			// Set template engine to EJS
-
+	
+	// Require Passport Configuration
+	require('./passport')(passport)
+	
 	// Require Routes Module
-	require('./server/routes.js')(app)
+	require('./server/routes.js')(app, passport)
 	
 	return app;
 }
