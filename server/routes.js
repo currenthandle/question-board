@@ -13,7 +13,10 @@ module.exports = function(app, passport){
 	app.route('/user')
 		.get(function(req, res){
 		})
-		.post(function(req, res, next){
+		.post(passport.authenticate('local-signup', { successRedirect: '/',
+														failureRedirect: 'signup' }))
+		/*
+		function(req, res, next){
 			console.log('post route')	
 			var newUser = {
 				username: req.body.username,
@@ -28,10 +31,11 @@ module.exports = function(app, passport){
 			
 			res.redirect('/')
 		})
+		*/
 	app.route('/login')
 		.get(function(req,res){
 			res.render('login')
 		})
-		.post(passport.authenticate('local', { successRedirect: '/',
+		.post(passport.authenticate('local-login', { successRedirect: '/',
 												failureRedirect: '/login'}))
 }

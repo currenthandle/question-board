@@ -3,8 +3,25 @@ var LocalStrategy = require('passport-local').Strategy,
 
 module.exports = function(passport){
 	// Username and password extracted from cookie
-	passport.use(new LocalStrategy(function(username, password, done){
-		console.log("new LocalStrategy")
+	passport.use('local-signup', new LocalStrategy(function(username, password, done){
+		User.findOne({username: username}, function(err, user){
+			if(err) { return done(err) }
+			if(user) { return done(null, false) }
+			else {
+				var newUser = new User()
+				newUser.username = username
+				newUser.password = password
+				newUser.downloads = []
+				newPassword = []
+				
+				newUser.save(function(err){
+					if(err) { throw err }
+					return done(null, newUser)
+				})
+			}
+		})	
+	}))
+	passport.use('local-login', new LocalStrategy(function(username, password, done){
 		User.findOne({username: username, password: password}, function(err, user){
 			if(err) { return done(err) }
 			if(!user) { return done(null, false)}
@@ -12,8 +29,7 @@ module.exports = function(passport){
 		})	
 	}))
 	passport.serializeUser(function(user, done){
-		console.log('seralizeUser')
-		done(null, user)
+		done(null, user.id)
 	})
 
 	passport.deserializeUser(function(user, done){
