@@ -20,7 +20,7 @@ module.exports = function(){
 		app.use(morgan('dev'))
 	}
 
-	app.use(bodyParser.urlencoded({'extended':'true'})) 	 // Only parse urlencoded bodies
+	app.use(bodyParser.urlencoded({'extended': true})) 	 // Only parse urlencoded bodies
 	app.use(bodyParser.json())							 // Only parse JSON
 
 	app.use(session({secret: "this is the secret"}))	// Secret for hashing cookie
