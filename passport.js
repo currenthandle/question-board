@@ -12,6 +12,7 @@ module.exports = function(passport){
 				var newUser = new User()
 				newUser.username = username
 				newUser.password = newUser.generateHash(password)
+				
 				newUser.downloads = []
 				newPassword = []
 				
@@ -27,6 +28,8 @@ module.exports = function(passport){
 			if(err) { return done(err) }
 			if(!user) { return done(null, false) }
 			if(!user.validPassword(password)) { return done(null, false) }
+			console.log('this is the user', user)
+			console.log('done', done)
 			return done(null, user)
 		})	
 	}))
@@ -35,8 +38,8 @@ module.exports = function(passport){
 		done(null, user.id)
 	})
 
-	passport.deserializeUser(function(user, done){
-		User.findById(user._id, function(err, user){
+	passport.deserializeUser(function(id, done){
+		User.findById(id, function(err, user){
 			done(err, user)
 		})
 	})
