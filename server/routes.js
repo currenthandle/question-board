@@ -3,7 +3,6 @@
 var User = require('mongoose').model('User')
 
 // route middleware to ensure user is logged in
-
 function isLoggedIn(req, res, next){
 	console.log('req.user', req.user)
 	console.log('req.isAuthenticated', req.isAuthenticated())
@@ -11,7 +10,7 @@ function isLoggedIn(req, res, next){
 		console.log('in isLoggedIn')
 		return next()
 	}
-	res.redirect('/')
+	res.redirect('/login')
 }
 
 
@@ -21,6 +20,7 @@ module.exports = function(app, passport){
 		.get(function(req, res){
 			res.render('index')
 		})
+	
 	app.get('/signUp', function(req, res){
 		res.render('signup')
 	})
@@ -30,16 +30,15 @@ module.exports = function(app, passport){
 		})
 		.post(passport.authenticate('local-signup', { successRedirect: '/',
 														failureRedirect: 'signup' }))
-														
 	app.route('/login')
 		.get(function(req, res){
 			res.render('login')
 		})
-		.post(passport.authenticate('local-login', { successRedirect: '/',
+		.post(passport.authenticate('local-login', { successRedirect: '/profile',
 													failureRedirect: '/login'}), function(req, res){
 														console.log('req.user', req.user)	
 													})
-	app.get('/profile', function(req, res){
+	app.get('/profile', isLoggedIn, function(req, res){
 		console.log('req.user', req.user)
 		res.render('profile', { user: req.user })
 	})
