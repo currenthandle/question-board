@@ -4,8 +4,8 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 // Require modules
-var express = require('./express'),
-	mongoose = require('./mongoose')
+var express = require('./config/express'),
+	mongoose = require('./config/mongoose')
 
 // Intialize Database
 var db = mongoose()
